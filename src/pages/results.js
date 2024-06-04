@@ -1,7 +1,7 @@
-// pages/results.js
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import fetchPhoto from './api/fetchPhoto';
+import { Box, Grid, Image, Text, Flex, Center } from '@chakra-ui/react';
 
 const ResultsPage = () => {
     const [places, setPlaces] = useState([]);
@@ -14,7 +14,6 @@ const ResultsPage = () => {
                 .then(data => {
                     if (data) {
                         processPlaces(data);
-                        console.log("Data: ", data);
                     }
                 })
                 .catch(error => console.error('Failed to load places:', error));
@@ -31,7 +30,7 @@ const ResultsPage = () => {
                         .then(sentiments => {
                             const positiveCount = sentiments.filter(sentiment => sentiment === 'positive').length;
                             if (positiveCount >= 4) {
-                                return place; // Only return the place if 4 out of 5 reviews are positive
+                                return place;
                             }
                         });
                 }
@@ -59,16 +58,26 @@ const ResultsPage = () => {
     };
 
     return (
-        <div>
-            <h1>Finished</h1>
-            {places.map((place, index) => (
-                <div key={index}>
-                    <img src={place.imageUrl} alt={place.name} />
-                    <p>{place.name}</p>
-                    <p>Rating: {place.rating}</p>
-                </div>
-            ))}
-        </div>
+        <Flex height="100vh" direction="column" align="center" justify="center" bgGradient="linear(to-r, #41436A 25%, #984063 50%, #F64668 75%, #FE9677)">
+            <Text fontSize="4xl" fontWeight="bold" color="white" position="absolute" top="1rem" left="1rem">KickbackTP</Text>
+            {places.length > 0 ? (
+                <Grid templateColumns="repeat(3, 1fr)" gap={6} pt={20}>
+                    {places.map((place, index) => (
+                        <Box key={index} boxShadow='md' p='6' rounded='md' bg='white'>
+                            <Center>
+                                <Image src={place.imageUrl} alt={place.name} borderRadius='md' boxSize="150px" objectFit="cover" />
+                            </Center>
+                            <Text fontSize='lg' mt='2'>{place.name}</Text>
+                            <Text fontSize='sm'>Rating: {place.rating}</Text>
+                        </Box>
+                    ))}
+                </Grid>
+            ) : (
+                <Center pt={20}>
+                    <Text fontSize='xl' color="white">No quality places found.</Text>
+                </Center>
+            )}
+        </Flex>
     );
 };
 

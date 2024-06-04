@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
+import { Input, Button, VStack, Box, Heading, Flex, Text } from '@chakra-ui/react';
 
 const LocationInput = () => {
     const inputRef = useRef(null);
     const [address, setAddress] = useState('');
-    const [budget, setBudget] = useState('');  // State for storing the budget
     const router = useRouter();
 
     useEffect(() => {
@@ -35,7 +35,7 @@ const LocationInput = () => {
                 const data = await response.json();
                 if (data.success) {
                     const { lat, lng } = data.coordinates;
-                    router.push(`/results?lat=${lat}&lng=${lng}&budget=${budget}`);  // Pass the budget as a query parameter
+                    router.push(`/results?lat=${lat}&lng=${lng}`);
                 } else {
                     console.error('Geocoding failed:', data.error);
                 }
@@ -46,23 +46,20 @@ const LocationInput = () => {
     };
 
     return (
-        <div>
-            <h1>Enter your destination and budget</h1>
-            <input
-                ref={inputRef}
-                type="text"
-                placeholder="Start typing an address..."
-                style={{ width: '100%', padding: '10px', fontSize: '16px' }}
-            />
-            <input
-                type="number"
-                value={budget}
-                onChange={(e) => setBudget(e.target.value)}
-                placeholder="Enter your budget"
-                style={{ width: '100%', padding: '10px', fontSize: '16px', marginTop: '10px' }}
-            />
-            <button onClick={handleGeocode}>Search</button>
-        </div>
+        <Flex height="100vh" direction="column" align="center" justify="center" bgGradient="linear(to-r, #41436A 25%, #984063 50%, #F64668 75%, #FE9677)">
+            <Text fontSize="4xl" fontWeight="bold" color="white" position="absolute" top="1rem" left="1rem">KickbackTP</Text>
+            <Box p={5} shadow='md' borderWidth='1px' borderRadius='md' bg="white" width="auto" maxWidth="480px">
+                <VStack spacing={4}>
+                    <Heading as='h1' size='xl'>Where would you like to go?</Heading>
+                    <Input
+                        ref={inputRef}
+                        type="text"
+                        placeholder="Start typing an address..."
+                    />
+                    <Button colorScheme="pink" onClick={handleGeocode}>Search</Button>
+                </VStack>
+            </Box>
+        </Flex>
     );
 };
 
