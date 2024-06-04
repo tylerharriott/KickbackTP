@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import fetchPhoto from './api/fetchPhoto';
-import { Box, Grid, Image, Text, Flex, Center } from '@chakra-ui/react';
+import { Box, Grid, Image, Text, Flex, Center, Badge } from '@chakra-ui/react';
+import { MdStar } from "react-icons/md";
 
 const ResultsPage = () => {
     const [places, setPlaces] = useState([]);
@@ -23,18 +24,18 @@ const ResultsPage = () => {
     const processPlaces = async (places) => {
         const promises = places.map(place =>
             fetchPlaceDetails(place.place_id)
-            .then(details => {
-                if (details && details.reviews && details.reviews.length >= 5) {
-                    const firstFiveReviews = details.reviews.slice(0, 5);
-                    return analyzeSentiments(firstFiveReviews.map(review => review.text))
-                        .then(sentiments => {
-                            const positiveCount = sentiments.filter(sentiment => sentiment === 'positive').length;
-                            if (positiveCount >= 4) {
-                                return place;
-                            }
-                        });
-                }
-            })
+                .then(details => {
+                    if (details && details.reviews && details.reviews.length >= 5) {
+                        const firstFiveReviews = details.reviews.slice(0, 5);
+                        return analyzeSentiments(firstFiveReviews.map(review => review.text))
+                            .then(sentiments => {
+                                const positiveCount = sentiments.filter(sentiment => sentiment === 'positive').length;
+                                if (positiveCount >= 4) {
+                                    return place;
+                                }
+                            });
+                    }
+                })
         );
 
         const results = (await Promise.all(promises)).filter(Boolean);
@@ -59,16 +60,35 @@ const ResultsPage = () => {
 
     return (
         <Flex height="100vh" direction="column" align="center" justify="center" bgGradient="linear(to-r, #41436A 25%, #984063 50%, #F64668 75%, #FE9677)">
-            <Text fontSize="4xl" fontWeight="bold" color="white" position="absolute" top="1rem" left="1rem">KickbackTP</Text>
+            <Text fontSize="3xl" fontWeight="bold" color="white" position="absolute" top="1rem" left="1rem">KickbackTP</Text>
             {places.length > 0 ? (
                 <Grid templateColumns="repeat(3, 1fr)" gap={6} pt={20}>
                     {places.map((place, index) => (
-                        <Box key={index} boxShadow='md' p='6' rounded='md' bg='white'>
-                            <Center>
-                                <Image src={place.imageUrl} alt={place.name} borderRadius='md' boxSize="150px" objectFit="cover" />
-                            </Center>
-                            <Text fontSize='lg' mt='2'>{place.name}</Text>
-                            <Text fontSize='sm'>Rating: {place.rating}</Text>
+                        <Box key={index} p="5" maxW="320px" borderWidth="1px" borderRadius="md" overflow="hidden" bg="white">
+                            <Image borderRadius="md" src={place.imageUrl} alt={place.name} objectFit="cover" height="200px" width="100%" />
+                            <Flex direction="column" mt={2}>
+                                <Flex align="baseline">
+                                    <Badge colorScheme="pink" mb={1}>Verified</Badge>
+                                </Flex>
+                                <Text
+                                    textTransform="uppercase"
+                                    fontSize="sm"
+                                    fontWeight="bold"
+                                    color="pink.800"
+                                >
+                                    {place.name}
+                                </Text>
+                            </Flex>
+                            <Text mt={2} fontSize="xl" fontWeight="semibold" lineHeight="short">
+                                {place.description}
+                            </Text>
+                            <Text mt={2}>{place.price}</Text>
+                            <Flex mt={2} align="center">
+                                <Box as={MdStar} color="orange.400" />
+                                <Text ml={1} fontSize="sm">
+                                    <b>{place.rating}</b> ({place.user_ratings_total})
+                                </Text>
+                            </Flex>
                         </Box>
                     ))}
                 </Grid>

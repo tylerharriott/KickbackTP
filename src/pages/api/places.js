@@ -8,7 +8,7 @@ export default async function handler(req, res) {
             const data = await response.json();
             if (data.results) {
                 res.status(200).json({ success: true, results: data.results });
-                // console.log(data.results);
+                 //console.log(data.results);
             } else {
                 res.status(200).json({ success: false, error: 'No results found' });
             }

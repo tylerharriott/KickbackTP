@@ -47,7 +47,7 @@ const LocationInput = () => {
 
     return (
         <Flex height="100vh" direction="column" align="center" justify="center" bgGradient="linear(to-r, #41436A 25%, #984063 50%, #F64668 75%, #FE9677)">
-            <Text fontSize="4xl" fontWeight="bold" color="white" position="absolute" top="1rem" left="1rem">KickbackTP</Text>
+            <Text fontSize="3xl" fontWeight="bold" color="white" position="absolute" top="1rem" left="1rem">KickbackTP</Text>
             <Box p={5} shadow='md' borderWidth='1px' borderRadius='md' bg="white" width="auto" maxWidth="480px">
                 <VStack spacing={4}>
                     <Heading as='h1' size='xl'>Where would you like to go?</Heading>
