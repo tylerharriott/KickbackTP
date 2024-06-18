@@ -21,6 +21,23 @@ const ResultsPage = () => {
         }
     }, [lat, lng]);
 
+    const getPriceRange = (priceLevel) => {
+        switch (priceLevel) {
+            case 0:
+                return 'Free';
+            case 1:
+                return '$0 - $10';
+            case 2:
+                return '$10 - $30';
+            case 3:
+                return '$30 - $60';
+            case 4:
+                return '$60 and above';
+            default:
+                return 'Free Entrance';
+        }
+    };
+
     const processPlaces = async (places) => {
         const promises = places.map(place =>
             fetchPlaceDetails(place.place_id)
@@ -31,7 +48,7 @@ const ResultsPage = () => {
                             .then(sentiments => {
                                 const positiveCount = sentiments.filter(sentiment => sentiment === 'positive').length;
                                 if (positiveCount >= 4) {
-                                    return place;
+                                    return { ...place, priceRange: getPriceRange(details.price_level) };
                                 }
                             });
                     }
@@ -59,7 +76,7 @@ const ResultsPage = () => {
     };
 
     return (
-        <Flex height="100vh" direction="column" align="center" justify="center" bgGradient="linear(to-r, #41436A 25%, #984063 50%, #F64668 75%, #FE9677)">
+        <Flex height="100vh" direction="column" align="center" justify="center" bgGradient="linear(to-br, #E50058, #FF740F, #FFBE36, #FCFCFC, #193B55)">
             <Text fontSize="3xl" fontWeight="bold" color="white" position="absolute" top="1rem" left="1rem">KickbackTP</Text>
             {places.length > 0 ? (
                 <Grid templateColumns="repeat(3, 1fr)" gap={6} pt={20}>
@@ -82,7 +99,7 @@ const ResultsPage = () => {
                             <Text mt={2} fontSize="xl" fontWeight="semibold" lineHeight="short">
                                 {place.description}
                             </Text>
-                            <Text mt={2}>{place.price}</Text>
+                            <Text mt={2}>{place.priceRange}</Text>
                             <Flex mt={2} align="center">
                                 <Box as={MdStar} color="orange.400" />
                                 <Text ml={1} fontSize="sm">
